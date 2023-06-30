@@ -6,6 +6,8 @@ package it.polito.tdp.itunes;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.itunes.model.Album;
 import it.polito.tdp.itunes.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,10 +36,10 @@ public class FXMLController {
     private Button btnPercorso; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbA1"
-    private ComboBox<?> cmbA1; // Value injected by FXMLLoader
+    private ComboBox<Album> cmbA1; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbA2"
-    private ComboBox<?> cmbA2; // Value injected by FXMLLoader
+    private ComboBox<Album> cmbA2; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtN"
     private TextField txtN; // Value injected by FXMLLoader
@@ -50,17 +52,51 @@ public class FXMLController {
 
     @FXML
     void doCalcolaAdiacenze(ActionEvent event) {
+    	Album a1=this.cmbA1.getValue();
+    	this.txtResult.clear();
+    	if(a1==null) {
+    		txtResult.setText("Scegliere un album!");
+    	}
+    	
+    	txtResult.setText(model.calcolaAdiacenza(a1));
     	
     }
 
     @FXML
     void doCalcolaPercorso(ActionEvent event) {
+    	Album a2=this.cmbA2.getValue();
+    	Album a1=this.cmbA1.getValue();
+    	this.txtResult.clear();
+    	if(a2==null || a1==null) {
+    		txtResult.setText("Scegliere un album!");
+    	}
+    	try {
+    		double x=Double.parseDouble(this.txtX.getText());
+    		txtResult.setText(model.calcolaPercorso(a1, a2, x));
+    		
+    	}catch(NumberFormatException e) {
+    		txtResult.setText("Inserire Numero valido!!");
+    	}
+    	
     	
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-    	
+    	this.txtResult.clear();
+    	try {
+    		double price=Double.parseDouble(this.txtN.getText());
+    		model.creaGrafo(price);
+    		txtResult.setText("Grafo creato!!! \n");
+    		txtResult.appendText("#Numero vertici: "+model.getVerticiSize()+"\n");
+    		txtResult.appendText("#Numero archi: "+model.getArcoSize()+"\n");
+    		this.cmbA1.getItems().clear();
+    		this.cmbA2.getItems().clear();
+    		this.cmbA1.getItems().addAll(model.getVertici());
+    		this.cmbA2.getItems().addAll(model.getVertici());
+    	}catch(NumberFormatException e) {
+    		txtResult.setText("Inserire un numero valido!!!");
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

@@ -1,13 +1,42 @@
 package it.polito.tdp.itunes.model;
 
-public class Album {
+import java.util.*;
+
+public class Album implements Comparable<Album>{
 	private Integer albumId;
 	private String title;
-	
+	private Set<Track> canzoni;
+	private double costo;
+	private double bilancio;
 	public Album(Integer albumId, String title) {
 		super();
+		canzoni=new HashSet<>();
 		this.albumId = albumId;
 		this.title = title;
+	}
+	
+	public double getBilancio() {
+		return bilancio;
+	}
+
+	public void setBilancio(double bilancio) {
+		this.bilancio = bilancio;
+	}
+
+	public Set<Track> getCanzoni() {
+		return canzoni;
+	}
+
+	public void setCanzoni(Set<Track> canzoni) {
+		this.canzoni = canzoni;
+	}
+
+	public double getCosto() {
+		return costo;
+	}
+
+	public void setCosto(double costo) {
+		this.costo = costo;
 	}
 
 	public Integer getAlbumId() {
@@ -28,10 +57,7 @@ public class Album {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((albumId == null) ? 0 : albumId.hashCode());
-		return result;
+		return Objects.hash(albumId, title);
 	}
 
 	@Override
@@ -43,17 +69,18 @@ public class Album {
 		if (getClass() != obj.getClass())
 			return false;
 		Album other = (Album) obj;
-		if (albumId == null) {
-			if (other.albumId != null)
-				return false;
-		} else if (!albumId.equals(other.albumId))
-			return false;
-		return true;
+		return Objects.equals(albumId, other.albumId) && Objects.equals(title, other.title);
 	}
-	
+
 	@Override
 	public String toString() {
 		return title;
+	}
+
+	@Override
+	public int compareTo(Album o) {
+		
+		return title.compareTo(o.getTitle());
 	}
 	
 	

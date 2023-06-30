@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.Map;
+
 import it.polito.tdp.itunes.model.Album;
 import it.polito.tdp.itunes.model.Artist;
 import it.polito.tdp.itunes.model.Genre;
@@ -16,7 +18,7 @@ import it.polito.tdp.itunes.model.Track;
 
 public class ItunesDAO {
 	
-	public List<Album> getAllAlbums(){
+	public List<Album> getAllAlbums(Map<Integer, Album> idA){
 		final String sql = "SELECT * FROM Album";
 		List<Album> result = new LinkedList<>();
 		
@@ -26,7 +28,9 @@ public class ItunesDAO {
 			ResultSet res = st.executeQuery();
 
 			while (res.next()) {
-				result.add(new Album(res.getInt("AlbumId"), res.getString("Title")));
+				Album a=new Album(res.getInt("AlbumId"), res.getString("Title"));
+				result.add(a);
+				idA.put(a.getAlbumId(), a);
 			}
 			conn.close();
 		} catch (SQLException e) {
@@ -76,7 +80,7 @@ public class ItunesDAO {
 		return result;
 	}
 	
-	public List<Track> getAllTracks(){
+	public List<Track> getAllTracks(Map<Integer, Album> idA){
 		final String sql = "SELECT * FROM Track";
 		List<Track> result = new ArrayList<Track>();
 		
@@ -86,9 +90,11 @@ public class ItunesDAO {
 			ResultSet res = st.executeQuery();
 
 			while (res.next()) {
-				result.add(new Track(res.getInt("TrackId"), res.getString("Name"), 
+				Track t=new Track(res.getInt("TrackId"), res.getString("Name"), 
 						res.getString("Composer"), res.getInt("Milliseconds"), 
-						res.getInt("Bytes"),res.getDouble("UnitPrice")));
+						res.getInt("Bytes"),res.getDouble("UnitPrice"));
+				result.add(t);
+				idA.get(res.getInt("AlbumId")).getCanzoni().add(t);
 			
 			}
 			conn.close();
